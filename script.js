@@ -1,14 +1,161 @@
-Ganti/upload 5 foto kamu ke folder ini dengan nama persis seperti berikut:
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Undangan Pernikahan — Anita & Toshiko</title>
+<meta name="description" content="Undangan pernikahan digital">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-- foto1.jpg
-- foto2.jpg
-- foto3.jpg
-- foto4.jpg
-- foto5.jpg
-- qris.jpg   (gambar kode QRIS kamu, untuk bagian Amplop Digital)
+<!-- ============ COVER / SEGEL UNDANGAN ============ -->
+<section id="cover">
+  <div class="cover-ornament" aria-hidden="true">
+    <svg viewBox="0 0 200 200" width="120" height="120">
+      <circle cx="100" cy="100" r="96" fill="none" stroke="var(--gold)" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--gold)" stroke-width="1"/>
+      <text x="100" y="112" text-anchor="middle" font-family="Playfair Display, serif" font-size="46" fill="var(--gold)">K&amp;S</text>
+    </svg>
+  </div>
+  <p class="eyebrow">Undangan Pernikahan</p>
+  <h1 class="cover-title">Anita <span>&amp;</span> Toshiko</h1>
+  <p class="cover-sub">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+  <p class="cover-guest" id="guestNameCover">Tamu Undangan</p>
+  <button id="openBtn" class="btn-open">Buka Undangan</button>
+</section>
 
-Setelah upload, hapus file BACA-INI.txt ini (opsional, tidak wajib).
+<!-- ============ KONTEN UTAMA (tersembunyi sampai dibuka) ============ -->
+<main id="content" hidden>
 
-Tips:
-- Kompres foto dulu di tinypng.com atau squoosh.app supaya web tidak berat (idealnya di bawah 500KB per foto).
-- Kalau nama file foto kamu beda (misal .png atau nama lain), edit tag <img src="..."> di index.html bagian galeri.
+  <audio id="bgm" src="music.mp3" loop preload="none"></audio>
+  <button id="musicToggle" class="music-btn" aria-label="Putar/Jeda musik">♪</button>
+
+  <!-- HERO -->
+  <section class="section hero">
+    <p class="eyebrow">The Wedding Of</p>
+    <h1 class="hero-title">Anita <span>&amp;</span> Toshiko</h1>
+    <p class="hero-date">Sabtu, 12 Desember 2026</p>
+    <div class="divider" aria-hidden="true">◆</div>
+    <p class="hero-quote">"Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan dari jenismu sendiri, agar kamu merasa tenteram kepadanya."</p>
+    <p class="hero-quote-sub">QS. Ar-Rum: 21</p>
+  </section>
+
+  <!-- MEMPELAI -->
+  <section class="section couple">
+    <p class="eyebrow">Mempelai</p>
+    <div class="couple-grid">
+      <div class="couple-card">
+        <h2>Anita Aditya</h2>
+        <p>Putra dari Bapak Rudi Hartono &amp; Ibu Wulan Toshiko</p>
+      </div>
+      <div class="couple-divider" aria-hidden="true">&amp;</div>
+      <div class="couple-card">
+        <h2>Toshiko Amelia</h2>
+        <p>Putri dari Bapak Bambang Wijaya &amp; Ibu Ratna Dewi</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="section countdown-section">
+    <p class="eyebrow">Menuju Hari Bahagia</p>
+    <div class="countdown" id="countdown">
+      <div class="cd-box"><span id="cd-days">00</span><small>Hari</small></div>
+      <div class="cd-box"><span id="cd-hours">00</span><small>Jam</small></div>
+      <div class="cd-box"><span id="cd-mins">00</span><small>Menit</small></div>
+      <div class="cd-box"><span id="cd-secs">00</span><small>Detik</small></div>
+    </div>
+  </section>
+
+  <!-- ACARA -->
+  <section class="section event">
+    <p class="eyebrow">Acara</p>
+    <div class="event-grid">
+      <div class="event-card">
+        <h3>Akad Nikah</h3>
+        <p class="event-time">Sabtu, 12 Desember 2026<br>08.00 – 10.00 WIB</p>
+        <p class="event-place">Masjid Al-Ikhlas<br>Jl. Melati No. 10, Jakarta Selatan</p>
+      </div>
+      <div class="event-card">
+        <h3>Resepsi</h3>
+        <p class="event-time">Sabtu, 12 Desember 2026<br>11.00 – 14.00 WIB</p>
+        <p class="event-place">Gedung Serba Guna Anggrek<br>Jl. Mawar No. 25, Jakarta Selatan</p>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=GANTI_DENGAN_LINK_EMBED_MAPS_ANDA"
+        width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade" title="Lokasi Acara"></iframe>
+    </div>
+    <a class="btn-outline" href="https://maps.google.com/?q=Gedung+Serba+Guna+Anggrek+Jakarta" target="_blank" rel="noopener">Buka di Google Maps</a>
+  </section>
+
+  <!-- GALERI -->
+  <section class="section gallery-section">
+    <p class="eyebrow">Galeri</p>
+    <div class="gallery">
+      <img src="images/foto1.jpg" alt="Foto Anitaangan 1" class="g-item g-tall" loading="lazy">
+      <img src="images/foto2.jpg" alt="Foto Anitaangan 2" class="g-item" loading="lazy">
+      <img src="images/foto3.jpg" alt="Foto Anitaangan 3" class="g-item" loading="lazy">
+      <img src="images/foto4.jpg" alt="Foto Anitaangan 4" class="g-item g-wide" loading="lazy">
+      <img src="images/foto5.jpg" alt="Foto Anitaangan 5" class="g-item" loading="lazy">
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="section rsvp-section">
+    <p class="eyebrow">Konfirmasi Kehadiran</p>
+    <form id="rsvpForm" class="rsvp-form">
+      <label>
+        Nama
+        <input type="text" id="rsvpName" required placeholder="Nama Anda">
+      </label>
+      <label>
+        Kehadiran
+        <select id="rsvpStatus" required>
+          <option value="Hadir">Insyaallah Hadir</option>
+          <option value="Tidak Hadir">Mohon Maaf Tidak Bisa Hadir</option>
+        </select>
+      </label>
+      <label>
+        Ucapan &amp; Doa
+        <textarea id="rsvpMessage" rows="3" placeholder="Tulis ucapan dan doa untuk kedua mempelai"></textarea>
+      </label>
+      <button type="submit" class="btn-open">Kirim via WhatsApp</button>
+    </form>
+  </section>
+
+  <!-- AMPLOP DIGITAL -->
+  <section class="section gift-section">
+    <p class="eyebrow">Amplop Digital</p>
+    <p class="gift-note">Doa restu Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Namun jika ingin memberi tanda kasih, kami sediakan pilihan berikut.</p>
+    <div class="gift-grid">
+      <div class="gift-card">
+        <h4>Bank BSI</h4>
+        <p class="gift-number" id="rek1">BERCANDA</p>
+        <p class="gift-owner">a.n. Anita</p>
+        <button class="btn-copy" data-copy-target="rek1">Salin Nomor</button>
+      </div>
+      <div class="gift-card">
+        <h4>QRIS</h4>
+        <img src="images/qris.jpg" alt="Kode QRIS" class="qris-img">
+      </div>
+    </div>
+  </section>
+
+  <!-- PENUTUP -->
+  <footer class="section footer">
+    <p class="closing">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berAnitaan hadir untuk memberikan doa restu.</p>
+    <p class="closing-thanks">Kami yang berbahagia,</p>
+    <h2 class="footer-names">Anita &amp; Toshiko</h2>
+  </footer>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
