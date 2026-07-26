@@ -90,7 +90,7 @@ if (guestName !== "Tamu Undangan") {
 }
 
 /* =========================================================
-   5. SALIN NOMOR REKENING
+   5. SALIN NOMOR REAdriING
 ========================================================= */
 document.querySelectorAll(".btn-copy").forEach((btn) => {
   btn.addEventListener("click", () => {
