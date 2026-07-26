@@ -1,161 +1,105 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Undangan Pernikahan — Anita & Toshiko</title>
-<meta name="description" content="Undangan pernikahan digital">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+/* =========================================================
+   PENGATURAN — ubah bagian ini sesuai kebutuhanmu
+========================================================= */
+const CONFIG = {
+  weddingDate: "2026-12-12T08:00:00", // format: YYYY-MM-DDTHH:MM:SS
+  whatsappNumber: "6281234567890",     // nomor WA tujuan RSVP (format 62xxxxxxxxxx, tanpa + atau 0 di depan)
+};
 
-<!-- ============ COVER / SEGEL UNDANGAN ============ -->
-<section id="cover">
-  <div class="cover-ornament" aria-hidden="true">
-    <svg viewBox="0 0 200 200" width="120" height="120">
-      <circle cx="100" cy="100" r="96" fill="none" stroke="var(--gold)" stroke-width="1.5"/>
-      <circle cx="100" cy="100" r="80" fill="none" stroke="var(--gold)" stroke-width="1"/>
-      <text x="100" y="112" text-anchor="middle" font-family="Playfair Display, serif" font-size="46" fill="var(--gold)">K&amp;S</text>
-    </svg>
-  </div>
-  <p class="eyebrow">Undangan Pernikahan</p>
-  <h1 class="cover-title">Anita <span>&amp;</span> Toshiko</h1>
-  <p class="cover-sub">Kepada Yth. Bapak/Ibu/Saudara/i</p>
-  <p class="cover-guest" id="guestNameCover">Tamu Undangan</p>
-  <button id="openBtn" class="btn-open">Buka Undangan</button>
-</section>
+/* =========================================================
+   1. NAMA TAMU DARI URL (?to=Nama)
+   Contoh link: https://namakamu.github.io/undangan/?to=Syifa
+========================================================= */
+const params = new URLSearchParams(window.location.search);
+const guestName = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g, " ") : "Tamu Undangan";
+document.getElementById("guestNameCover").innerText = guestName;
 
-<!-- ============ KONTEN UTAMA (tersembunyi sampai dibuka) ============ -->
-<main id="content" hidden>
+/* =========================================================
+   2. BUKA UNDANGAN
+========================================================= */
+const openBtn = document.getElementById("openBtn");
+const cover = document.getElementById("cover");
+const content = document.getElementById("content");
+const bgm = document.getElementById("bgm");
 
-  <audio id="bgm" src="music.mp3" loop preload="none"></audio>
-  <button id="musicToggle" class="music-btn" aria-label="Putar/Jeda musik">♪</button>
+openBtn.addEventListener("click", () => {
+  content.hidden = false;
+  cover.style.transition = "opacity .6s ease";
+  cover.style.opacity = "0";
+  setTimeout(() => { cover.style.display = "none"; }, 600);
+  document.body.style.overflow = "auto";
+  bgm.play().catch(() => {}); // sebagian browser butuh interaksi user dulu; klik ini sudah cukup
+});
 
-  <!-- HERO -->
-  <section class="section hero">
-    <p class="eyebrow">The Wedding Of</p>
-    <h1 class="hero-title">Anita <span>&amp;</span> Toshiko</h1>
-    <p class="hero-date">Sabtu, 12 Desember 2026</p>
-    <div class="divider" aria-hidden="true">◆</div>
-    <p class="hero-quote">"Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan dari jenismu sendiri, agar kamu merasa tenteram kepadanya."</p>
-    <p class="hero-quote-sub">QS. Ar-Rum: 21</p>
-  </section>
+/* Musik on/off */
+const musicToggle = document.getElementById("musicToggle");
+musicToggle.addEventListener("click", () => {
+  if (bgm.paused) { bgm.play(); musicToggle.textContent = "♫"; }
+  else { bgm.pause(); musicToggle.textContent = "♪"; }
+});
 
-  <!-- MEMPELAI -->
-  <section class="section couple">
-    <p class="eyebrow">Mempelai</p>
-    <div class="couple-grid">
-      <div class="couple-card">
-        <h2>Anita Aditya</h2>
-        <p>Putra dari Bapak Rudi Hartono &amp; Ibu Wulan Toshiko</p>
-      </div>
-      <div class="couple-divider" aria-hidden="true">&amp;</div>
-      <div class="couple-card">
-        <h2>Toshiko Amelia</h2>
-        <p>Putri dari Bapak Bambang Wijaya &amp; Ibu Ratna Dewi</p>
-      </div>
-    </div>
-  </section>
+/* =========================================================
+   3. COUNTDOWN
+========================================================= */
+const target = new Date(CONFIG.weddingDate).getTime();
 
-  <!-- COUNTDOWN -->
-  <section class="section countdown-section">
-    <p class="eyebrow">Menuju Hari Bahagia</p>
-    <div class="countdown" id="countdown">
-      <div class="cd-box"><span id="cd-days">00</span><small>Hari</small></div>
-      <div class="cd-box"><span id="cd-hours">00</span><small>Jam</small></div>
-      <div class="cd-box"><span id="cd-mins">00</span><small>Menit</small></div>
-      <div class="cd-box"><span id="cd-secs">00</span><small>Detik</small></div>
-    </div>
-  </section>
+function updateCountdown() {
+  const now = Date.now();
+  const diff = target - now;
 
-  <!-- ACARA -->
-  <section class="section event">
-    <p class="eyebrow">Acara</p>
-    <div class="event-grid">
-      <div class="event-card">
-        <h3>Akad Nikah</h3>
-        <p class="event-time">Sabtu, 12 Desember 2026<br>08.00 – 10.00 WIB</p>
-        <p class="event-place">Masjid Al-Ikhlas<br>Jl. Melati No. 10, Jakarta Selatan</p>
-      </div>
-      <div class="event-card">
-        <h3>Resepsi</h3>
-        <p class="event-time">Sabtu, 12 Desember 2026<br>11.00 – 14.00 WIB</p>
-        <p class="event-place">Gedung Serba Guna Anggrek<br>Jl. Mawar No. 25, Jakarta Selatan</p>
-      </div>
-    </div>
-    <div class="map-wrap">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=GANTI_DENGAN_LINK_EMBED_MAPS_ANDA"
-        width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade" title="Lokasi Acara"></iframe>
-    </div>
-    <a class="btn-outline" href="https://maps.google.com/?q=Gedung+Serba+Guna+Anggrek+Jakarta" target="_blank" rel="noopener">Buka di Google Maps</a>
-  </section>
+  if (diff <= 0) {
+    document.getElementById("cd-days").textContent = "00";
+    document.getElementById("cd-hours").textContent = "00";
+    document.getElementById("cd-mins").textContent = "00";
+    document.getElementById("cd-secs").textContent = "00";
+    return;
+  }
 
-  <!-- GALERI -->
-  <section class="section gallery-section">
-    <p class="eyebrow">Galeri</p>
-    <div class="gallery">
-      <img src="images/foto1.jpg" alt="Foto Anitaangan 1" class="g-item g-tall" loading="lazy">
-      <img src="images/foto2.jpg" alt="Foto Anitaangan 2" class="g-item" loading="lazy">
-      <img src="images/foto3.jpg" alt="Foto Anitaangan 3" class="g-item" loading="lazy">
-      <img src="images/foto4.jpg" alt="Foto Anitaangan 4" class="g-item g-wide" loading="lazy">
-      <img src="images/foto5.jpg" alt="Foto Anitaangan 5" class="g-item" loading="lazy">
-    </div>
-  </section>
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / (1000 * 60)) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
 
-  <!-- RSVP -->
-  <section class="section rsvp-section">
-    <p class="eyebrow">Konfirmasi Kehadiran</p>
-    <form id="rsvpForm" class="rsvp-form">
-      <label>
-        Nama
-        <input type="text" id="rsvpName" required placeholder="Nama Anda">
-      </label>
-      <label>
-        Kehadiran
-        <select id="rsvpStatus" required>
-          <option value="Hadir">Insyaallah Hadir</option>
-          <option value="Tidak Hadir">Mohon Maaf Tidak Bisa Hadir</option>
-        </select>
-      </label>
-      <label>
-        Ucapan &amp; Doa
-        <textarea id="rsvpMessage" rows="3" placeholder="Tulis ucapan dan doa untuk kedua mempelai"></textarea>
-      </label>
-      <button type="submit" class="btn-open">Kirim via WhatsApp</button>
-    </form>
-  </section>
+  document.getElementById("cd-days").textContent = String(days).padStart(2, "0");
+  document.getElementById("cd-hours").textContent = String(hours).padStart(2, "0");
+  document.getElementById("cd-mins").textContent = String(mins).padStart(2, "0");
+  document.getElementById("cd-secs").textContent = String(secs).padStart(2, "0");
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
-  <!-- AMPLOP DIGITAL -->
-  <section class="section gift-section">
-    <p class="eyebrow">Amplop Digital</p>
-    <p class="gift-note">Doa restu Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Namun jika ingin memberi tanda kasih, kami sediakan pilihan berikut.</p>
-    <div class="gift-grid">
-      <div class="gift-card">
-        <h4>Bank BSI</h4>
-        <p class="gift-number" id="rek1">BERCANDA</p>
-        <p class="gift-owner">a.n. Anita</p>
-        <button class="btn-copy" data-copy-target="rek1">Salin Nomor</button>
-      </div>
-      <div class="gift-card">
-        <h4>QRIS</h4>
-        <img src="images/qris.jpg" alt="Kode QRIS" class="qris-img">
-      </div>
-    </div>
-  </section>
+/* =========================================================
+   4. RSVP -> KIRIM VIA WHATSAPP
+========================================================= */
+const rsvpForm = document.getElementById("rsvpForm");
+rsvpForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = document.getElementById("rsvpName").value.trim();
+  const status = document.getElementById("rsvpStatus").value;
+  const message = document.getElementById("rsvpMessage").value.trim();
 
-  <!-- PENUTUP -->
-  <footer class="section footer">
-    <p class="closing">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berAnitaan hadir untuk memberikan doa restu.</p>
-    <p class="closing-thanks">Kami yang berbahagia,</p>
-    <h2 class="footer-names">Anita &amp; Toshiko</h2>
-  </footer>
+  const text = `Halo, saya ${name}.\nKonfirmasi kehadiran: ${status}.\nUcapan & doa: ${message || "-"}`;
+  const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+});
 
-</main>
+/* Isi otomatis nama di form RSVP dari nama tamu di URL */
+if (guestName !== "Tamu Undangan") {
+  const rsvpNameInput = document.getElementById("rsvpName");
+  if (rsvpNameInput) rsvpNameInput.value = guestName;
+}
 
-<script src="script.js"></script>
-</body>
-</html>
+/* =========================================================
+   5. SALIN NOMOR REKENING
+========================================================= */
+document.querySelectorAll(".btn-copy").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const targetId = btn.getAttribute("data-copy-target");
+    const text = document.getElementById(targetId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = "Tersalin!";
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    });
+  });
+});
