@@ -1,9 +1,12 @@
-/* =========================================================
-   PENGATURAN — ubah bagian ini sesuai kebutuhanmu
-========================================================= */
 const CONFIG = {
   weddingDate: "2026-12-12T08:00:00", // format: YYYY-MM-DDTHH:MM:SS
-  whatsappNumber: "6281234567890",     // nomor WA tujuan RSVP (format 62xxxxxxxxxx, tanpa + atau 0 di depan)
+
+  // RSVP dikirim ke Formspree (layanan gratis) supaya konfirmasi tetap
+  // di dalam website, tidak pindah ke WhatsApp.
+  // Cara dapatkan endpoint ini: daftar gratis di https://formspree.io
+  // -> Create Form -> nanti dapat link seperti https://formspree.io/f/xxxxabcd
+  // -> ganti nilai di bawah ini dengan link tersebut.
+  formspreeEndpoint: "https://formspree.io/f/GANTI_DENGAN_ID_FORM_KAMU",
 };
 
 /* =========================================================
@@ -69,18 +72,67 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 
 /* =========================================================
-   4. RSVP -> KIRIM VIA WHATSAPP
+   4. GALERI -> LIGHTBOX (klik foto untuk zoom)
+========================================================= */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxClose = document.getElementById("lightboxClose");
+
+document.querySelectorAll(".gallery .g-item").forEach((img) => {
+  img.addEventListener("click", () => {
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.hidden = false;
+  });
+});
+
+function closeLightbox() { lightbox.hidden = true; lightboxImg.src = ""; }
+lightboxClose.addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
+
+/* =========================================================
+   5. RSVP -> KIRIM LANGSUNG DARI WEBSITE (via Formspree)
 ========================================================= */
 const rsvpForm = document.getElementById("rsvpForm");
-rsvpForm.addEventListener("submit", (e) => {
+const rsvpSubmitBtn = document.getElementById("rsvpSubmitBtn");
+const rsvpStatusMsg = document.getElementById("rsvpStatusMsg");
+
+rsvpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = document.getElementById("rsvpName").value.trim();
   const status = document.getElementById("rsvpStatus").value;
   const message = document.getElementById("rsvpMessage").value.trim();
 
-  const text = `Halo, saya ${name}.\nKonfirmasi kehadiran: ${status}.\nUcapan & doa: ${message || "-"}`;
-  const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
-  window.open(url, "_blank");
+  rsvpSubmitBtn.disabled = true;
+  rsvpSubmitBtn.textContent = "Mengirim...";
+  rsvpStatusMsg.hidden = true;
+
+  try {
+    const response = await fetch(CONFIG.formspreeEndpoint, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ nama: name, kehadiran: status, ucapan: message || "-" }),
+    });
+
+    if (response.ok) {
+      rsvpStatusMsg.textContent = "Terima kasih! Konfirmasi kehadiran kamu sudah terkirim.";
+      rsvpStatusMsg.className = "rsvp-status-msg success";
+      rsvpStatusMsg.hidden = false;
+      rsvpForm.reset();
+      if (guestName !== "Tamu Undangan") document.getElementById("rsvpName").value = guestName;
+      rsvpSubmitBtn.textContent = "Kirim Konfirmasi";
+    } else {
+      throw new Error("Gagal mengirim");
+    }
+  } catch (err) {
+    rsvpStatusMsg.textContent = "Maaf, konfirmasi gagal terkirim. Coba lagi sebentar lagi ya.";
+    rsvpStatusMsg.className = "rsvp-status-msg error";
+    rsvpStatusMsg.hidden = false;
+    rsvpSubmitBtn.textContent = "Kirim Konfirmasi";
+  }
+
+  rsvpSubmitBtn.disabled = false;
 });
 
 /* Isi otomatis nama di form RSVP dari nama tamu di URL */
@@ -90,7 +142,7 @@ if (guestName !== "Tamu Undangan") {
 }
 
 /* =========================================================
-   5. SALIN NOMOR REAdriING
+   6. SALIN NOMOR REKENING
 ========================================================= */
 document.querySelectorAll(".btn-copy").forEach((btn) => {
   btn.addEventListener("click", () => {
