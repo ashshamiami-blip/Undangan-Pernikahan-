@@ -16,7 +16,7 @@ const CONFIG = {
    0. FALLBACK FOTO — kalau foto belum diupload, tampilkan
    kotak placeholder rapi (bukan ikon "gambar rusak" browser)
 ========================================================= */
-const FALLBACK_IMG = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22%23EAD9C4%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%22380%22%20height%3D%22380%22%20fill%3D%22none%22%20stroke%3D%22%23B08A4E%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%226%206%22/%3E%3Cg%20transform%3D%22translate%28200%2C170%29%22%3E%3Crect%20x%3D%22-45%22%20y%3D%22-30%22%20width%3D%2290%22%20height%3D%2265%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%236E1423%22%20stroke-width%3D%225%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%2220%22%20fill%3D%22none%22%20stroke%3D%22%236E1423%22%20stroke-width%3D%225%22/%3E%3Crect%20x%3D%22-15%22%20y%3D%22-42%22%20width%3D%2230%22%20height%3D%2214%22%20rx%3D%223%22%20fill%3D%22%236E1423%22/%3E%3C/g%3E%3Ctext%20x%3D%22200%22%20y%3D%22270%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%236E1423%22%3EFoto%20belum%20diupload%3C/text%3E%3C/svg%3E";
+const FALLBACK_IMG = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22%23EAD9C4%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%22380%22%20height%3D%22380%22%20fill%3D%22none%22%20stroke%3D%22%23C9A15E%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%226%206%22/%3E%3Cg%20transform%3D%22translate%28200%2C170%29%22%3E%3Crect%20x%3D%22-45%22%20y%3D%22-30%22%20width%3D%2290%22%20height%3D%2265%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%2316224A%22%20stroke-width%3D%225%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%2220%22%20fill%3D%22none%22%20stroke%3D%22%2316224A%22%20stroke-width%3D%225%22/%3E%3Crect%20x%3D%22-15%22%20y%3D%22-42%22%20width%3D%2230%22%20height%3D%2214%22%20rx%3D%223%22%20fill%3D%22%2316224A%22/%3E%3C/g%3E%3Ctext%20x%3D%22200%22%20y%3D%22270%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%2316224A%22%3EFoto%20belum%20diupload%3C/text%3E%3C/svg%3E";
 
 function handleImgFallback(img) {
   function setFallback() {
@@ -91,27 +91,7 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 
 /* =========================================================
-   4. GALERI -> LIGHTBOX (klik foto untuk zoom)
-========================================================= */
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightboxImg");
-const lightboxClose = document.getElementById("lightboxClose");
-
-document.querySelectorAll(".gallery .g-item").forEach((img) => {
-  img.addEventListener("click", () => {
-    lightboxImg.src = img.src;
-    lightboxImg.alt = img.alt;
-    lightbox.hidden = false;
-  });
-});
-
-function closeLightbox() { lightbox.hidden = true; lightboxImg.src = ""; }
-lightboxClose.addEventListener("click", closeLightbox);
-lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
-
-/* =========================================================
-   5. RSVP -> KIRIM LANGSUNG DARI WEBSITE (via Formspree)
+   4. RSVP -> KIRIM LANGSUNG DARI WEBSITE (via Formspree)
 ========================================================= */
 const rsvpForm = document.getElementById("rsvpForm");
 const rsvpSubmitBtn = document.getElementById("rsvpSubmitBtn");
@@ -161,7 +141,7 @@ if (guestName !== "Tamu Undangan") {
 }
 
 /* =========================================================
-   6. SALIN NOMOR REKENING
+   5. SALIN NOMOR REKENING
 ========================================================= */
 document.querySelectorAll(".btn-copy").forEach((btn) => {
   btn.addEventListener("click", () => {
