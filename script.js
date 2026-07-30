@@ -91,7 +91,35 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 
 /* =========================================================
-   4. RSVP -> KIRIM LANGSUNG DARI WEBSITE (via Formspree)
+   4. GALERI -> ZOOM FOTO (muncul hanya saat foto galeri diklik)
+========================================================= */
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxClose = document.getElementById("lightboxClose");
+
+function openLightbox(img) {
+  lightboxImg.src = img.currentSrc || img.src;
+  lightboxImg.alt = img.alt;
+  lightbox.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  lightbox.hidden = true;
+  lightboxImg.src = "";
+  document.body.style.overflow = "auto";
+}
+
+document.querySelectorAll(".gallery .g-item").forEach((img) => {
+  img.addEventListener("click", () => openLightbox(img));
+});
+
+lightboxClose.addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !lightbox.hidden) closeLightbox(); });
+
+/* =========================================================
+   5. RSVP -> KIRIM LANGSUNG DARI WEBSITE (via Formspree)
 ========================================================= */
 const rsvpForm = document.getElementById("rsvpForm");
 const rsvpSubmitBtn = document.getElementById("rsvpSubmitBtn");
@@ -141,7 +169,7 @@ if (guestName !== "Tamu Undangan") {
 }
 
 /* =========================================================
-   5. SALIN NOMOR REKENING
+   6. SALIN NOMOR REKENING
 ========================================================= */
 document.querySelectorAll(".btn-copy").forEach((btn) => {
   btn.addEventListener("click", () => {
