@@ -1,3 +1,6 @@
+/* =========================================================
+   PENGATURAN — ubah bagian ini sesuai kebutuhanmu
+========================================================= */
 const CONFIG = {
   weddingDate: "2026-12-12T08:00:00", // format: YYYY-MM-DDTHH:MM:SS
 
