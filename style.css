@@ -1,4 +1,5 @@
 :root{
+  --maroon:#6B1426;
   --cream:#FBF3EE;
   --ink:#1C2542;
   --navy:#16224A;
@@ -20,6 +21,10 @@ body{
   font-size:19px;
   line-height:1.6;
   background-color:var(--cream);
+/* Properti bingkai maroon */
+  border: 28px solid var(--maroon);
+  min-height: 100vh;
+  
 }
 
 .eyebrow{
