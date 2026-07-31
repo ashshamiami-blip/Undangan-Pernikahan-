@@ -44,7 +44,8 @@ body{
     radial-gradient(circle at 50% 20%, var(--gold-light) 0%, transparent 55%),
     transparent;
 }
-/* Background navy elegan bergaya video: gradasi biru tua lembut + ranting bunga emas */
+
+/* Background navy elegan */
 .cover-photo-bg{
   background-color:var(--navy-deep);
   background-image:
@@ -85,7 +86,6 @@ body{
   50%{border-color:rgba(201,161,94,.75);}
 }
 
-/* Ranting bunga emas di dua sudut, terinspirasi dari video undangan */
 .branch{
   position:absolute;
   width:150px;
@@ -311,6 +311,77 @@ body{
 }
 .rsvp-status-msg.success{color:#3B6E1E;}
 .rsvp-status-msg.error{color:var(--navy);}
+
+/* ============ RSVP LIST / UCAPAN TAMU (TAMBAHAN REVISI) ============ */
+.rsvp-list-container {
+  margin-top: 2rem;
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-right: 4px;
+}
+
+/* Custom Scrollbar */
+.rsvp-list-container::-webkit-scrollbar {
+  width: 5px;
+}
+.rsvp-list-container::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 10px;
+}
+
+.rsvp-card {
+  background: #fff;
+  border: 1px solid var(--gold-light);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(22, 34, 74, 0.04);
+}
+
+.rsvp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.rsvp-card-header strong {
+  font-family: var(--font-display);
+  color: var(--navy);
+  font-size: 1.1rem;
+}
+
+.rsvp-badge {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-success {
+  background: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #A5D6A7;
+}
+
+.badge-danger {
+  background: #FFEBEE;
+  color: #C62828;
+  border: 1px solid #EF9A9A;
+}
+
+.rsvp-card-msg {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.4;
+}
 
 /* ============ GIFT ============ */
 .gift-note{opacity:.8; max-width:480px; margin:0 auto 1.5rem;}
