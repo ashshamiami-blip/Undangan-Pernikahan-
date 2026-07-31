@@ -24,6 +24,7 @@ body{
 /* Properti bingkai maroon */
   border: 28px solid var(--maroon);
   min-height: 100vh;
+  border-radius: 40px;
   
 }
 
