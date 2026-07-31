@@ -9,7 +9,7 @@ const CONFIG = {
   // Cara dapatkan endpoint ini: daftar gratis di https://formspree.io
   // -> Create Form -> nanti dapat link seperti https://formspree.io/f/xxxxabcd
   // -> ganti nilai di bawah ini dengan link tersebut.
-  formspreeEndpoint: "https://formspree.io/f/GANTI_DENGAN_ID_FORM_KAMU",
+  formspreeEndpoint: "https://formspree.io/f/xnjeyvjk",
 };
 
 /* =========================================================
