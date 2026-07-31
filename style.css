@@ -157,16 +157,17 @@ body{
 .hero-quote-sub{font-family:var(--font-ui); font-size:.75rem; opacity:.6; letter-spacing:.05em;}
 
 /* ============ COUPLE ============ */
+/* ============ COUPLE ============ */
 .couple-grid{
   display:flex;
+  flex-direction:column; /* Menata elemen menjadi atas-bawah */
   align-items:center;
   justify-content:center;
   gap:1.5rem;
-  flex-wrap:wrap;
 }
 .couple-photo{
-  width:120px;
-  height:120px;
+  width:140px; /* Sedikit diperbesar agar lebih proporsional saat tampil atas-bawah */
+  height:140px;
   border-radius:50%;
   object-fit:cover;
   border:3px solid var(--gold);
@@ -174,9 +175,8 @@ body{
   background:var(--gold-light);
 }
 .couple-card h2{font-family:var(--font-display); font-weight:500; margin:0 0 .4rem; color:var(--navy);}
-.couple-card{max-width:220px; display:flex; flex-direction:column; align-items:center;}
-.couple-divider{font-family:var(--font-display); font-size:2rem; color:var(--gold); font-style:italic;}
-
+.couple-card{max-width:280px; display:flex; flex-direction:column; align-items:center;}
+.couple-divider{font-family:var(--font-display); font-size:2.2rem; color:var(--gold); font-style:italic;}
 /* ============ COUNTDOWN ============ */
 .countdown{display:flex; justify-content:center; gap:.8rem; flex-wrap:wrap;}
 .cd-box{
