@@ -17,7 +17,7 @@
   <!-- Bingkai tipis emas -->
   <div class="ornate-frame" aria-hidden="true"></div>
 
-  <!-- Ranting bunga emas di sudut, terinspirasi dari video undangan -->
+  <!-- Ranting bunga emas di sudut -->
   <svg class="branch branch-top" viewBox="0 0 150 150" aria-hidden="true"><use href="#branch-motif"/></svg>
   <svg class="branch branch-bottom" viewBox="0 0 150 150" aria-hidden="true"><use href="#branch-motif"/></svg>
 
@@ -51,7 +51,7 @@
   <button id="openBtn" class="btn-open">Buka Undangan</button>
 </section>
 
-<!-- ============ KONTEN UTAMA (tersembunyi sampai dibuka) ============ -->
+<!-- ============ KONTEN UTAMA ============ -->
 <main id="content" hidden>
 
   <audio id="bgm" src="music.mp3" loop preload="none"></audio>
@@ -133,19 +133,13 @@
     </div>
   </section>
 
-  <!-- LIGHTBOX (zoom galeri) -->
+  <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox" hidden>
     <button type="button" id="lightboxClose" class="lightbox-close" aria-label="Tutup">&times;</button>
     <img id="lightboxImg" src="" alt="Foto diperbesar">
   </div>
 
-  <!-- LIGHTBOX (zoom foto galeri, hanya muncul saat foto diklik) -->
-  <div id="lightbox" class="lightbox" hidden>
-    <button id="lightboxClose" class="lightbox-close" aria-label="Tutup">&times;</button>
-    <img id="lightboxImg" src="" alt="Foto diperbesar">
-  </div>
-
-  <!-- RSVP -->
+  <!-- RSVP / KONFIRMASI KEHADIRAN -->
   <section class="section rsvp-section">
     <p class="eyebrow">Konfirmasi Kehadiran</p>
     <form id="rsvpForm" class="rsvp-form">
@@ -167,6 +161,9 @@
       <button type="submit" class="btn-open" id="rsvpSubmitBtn">Kirim Konfirmasi</button>
       <p id="rsvpStatusMsg" class="rsvp-status-msg" hidden></p>
     </form>
+
+    <!-- CONTAINER UNTUK MENAMPILKAN DAFTAR UCAPAN TERKIRIM -->
+    <div id="rsvpListContainer" class="rsvp-list-container"></div>
   </section>
 
   <!-- AMPLOP DIGITAL -->
@@ -199,6 +196,11 @@
 
 </main>
 
+<!-- FIREBASE SDK (Penting dipanggil sebelum script.js) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<!-- FILE JAVASCRIPT UTAMA -->
 <script src="script.js"></script>
 </body>
 </html>
