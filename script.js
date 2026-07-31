@@ -38,11 +38,24 @@ document.querySelectorAll("img").forEach(handleImgFallback);
    1. NAMA TAMU DARI URL (?to=Nama)
 ========================================================= */
 const params = new URLSearchParams(window.location.search);
-const guestName = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g, " ") : "Tamu Undangan";
+const guestName = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g, " ") : "";
+
+// Tampilkan nama di Cover jika ada di URL
 const guestNameCover = document.getElementById("guestNameCover");
-if (guestNameCover) guestNameCover.innerText = guestName;
+if (guestNameCover) {
+  guestNameCover.innerText = guestName || "Tamu Undangan";
+}
 
 /* =========================================================
+   ISI OTOMATIS & KUNCI INPUT NAMA RSVP
+========================================================= */
+const rsvpNameInput = document.getElementById("rsvpName");
+if (rsvpNameInput && guestName) {
+  rsvpNameInput.value = guestName; // Isi nama otomatis
+  rsvpNameInput.readOnly = true;  // Kunci agar tidak bisa diketik/diubah
+  rsvpNameInput.style.backgroundColor = "#f0f0f0"; // (Opsional) beri warna agak abu-abu tanda terkunci
+  rsvpNameInput.style.cursor = "not-allowed";
+}
    2. BUKA UNDANGAN & MUSIK
 ========================================================= */
 const openBtn = document.getElementById("openBtn");
@@ -179,6 +192,13 @@ if (rsvpForm) {
       rsvpStatusMsg.className = "rsvp-status-msg success";
       rsvpStatusMsg.hidden = false;
       rsvpForm.reset();
+
+      // Kembalikan nama dari URL dan kunci lagi (jika ada nama dari URL)
+      if (hasCustomGuest && rsvpNameInput) {
+        rsvpNameInput.value = guestName;
+        rsvpNameInput.readOnly = true;
+      }
+      // ------------------------------------
 
       if (guestName !== "Tamu Undangan") {
         document.getElementById("rsvpName").value = guestName;
