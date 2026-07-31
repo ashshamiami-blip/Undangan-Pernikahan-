@@ -1,15 +1,13 @@
 /* =========================================================
-   PENGATURAN — ubah bagian ini sesuai kebutuhanmu
+   PENGATURAN & KONFIGURASI
 ========================================================= */
 const CONFIG = {
-  weddingDate: "2026-12-12T08:00:00", // format: YYYY-MM-DDTHH:MM:SS
-
-  // Formspree (Opsional untuk notifikasi email)
-  formspreeEndpoint: "https://formspree.io/f/xnjeyvjk",
+  weddingDate: "2026-12-12T08:00:00", // Format: YYYY-MM-DDTHH:MM:SS
+  formspreeEndpoint: "https://formspree.io/f/xnjeyvjk", // Endpoint Formspree (Opsional/Notifikasi Email)
 };
 
 /* =========================================================
-   FIREBASE INITIALIZATION (Realtime Database)
+   FIREBASE INITIALIZATION (Realtime Database Asia-Southeast1)
 ========================================================= */
 const firebaseConfig = {
   databaseURL: "https://undangan-p-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -21,7 +19,7 @@ if (!firebase.apps.length) {
 const database = firebase.database();
 
 /* =========================================================
-   0. FALLBACK FOTO — kalau foto belum diupload
+   0. FALLBACK FOTO (Jika Gambar Gagal dimuat)
 ========================================================= */
 const FALLBACK_IMG = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22%23EAD9C4%22/%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%22380%22%20height%3D%22380%22%20fill%3D%22none%22%20stroke%3D%22%23C9A15E%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%226%206%22/%3E%3Cg%20transform%3D%22translate%28200%2C170%29%22%3E%3Crect%20x%3D%22-45%22%20y%3D%22-30%22%20width%3D%2290%22%20height%3D%2265%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%2316224A%22%20stroke-width%3D%225%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%222%22%20r%3D%2220%22%20fill%3D%22none%22%20stroke%3D%22%2316224A%22%20stroke-width%3D%225%22/%3E%3Crect%20x%3D%22-15%22%20y%3D%22-42%22%20width%3D%2230%22%20height%3D%2214%22%20rx%3D%223%22%20fill%3D%22%2316224A%22/%3E%3C/g%3E%3Ctext%20x%3D%22200%22%20y%3D%22270%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%2316224A%22%3EFoto%20belum%20diupload%3C/text%3E%3C/svg%3E";
 
@@ -35,27 +33,30 @@ function handleImgFallback(img) {
 document.querySelectorAll("img").forEach(handleImgFallback);
 
 /* =========================================================
-   1. NAMA TAMU DARI URL (?to=Nama)
+   1. NAMA TAMU DARI URL (?to=Nama) & KUNCI FORM RSVP
 ========================================================= */
 const params = new URLSearchParams(window.location.search);
-const guestName = params.get("to") ? decodeURIComponent(params.get("to")).replace(/\+/g, " ") : "";
+const hasCustomGuest = params.has("to") && params.get("to").trim() !== "";
+const guestName = hasCustomGuest 
+  ? decodeURIComponent(params.get("to")).replace(/\+/g, " ") 
+  : "Tamu Undangan";
 
-// Tampilkan nama di Cover jika ada di URL
+// A. Tampilkan nama di Cover
 const guestNameCover = document.getElementById("guestNameCover");
 if (guestNameCover) {
-  guestNameCover.innerText = guestName || "Tamu Undangan";
+  guestNameCover.innerText = guestName;
+}
+
+// B. Isi otomatis dan kunci input nama di Form RSVP jika ada parameter URL
+const rsvpNameInput = document.getElementById("rsvpName");
+if (rsvpNameInput && hasCustomGuest) {
+  rsvpNameInput.value = guestName;
+  rsvpNameInput.readOnly = true; // Kunci input agar tidak bisa diketik ulang
+  rsvpNameInput.style.backgroundColor = "rgba(201, 161, 94, 0.1)"; // Latar transparan tipis penanda terkunci
+  rsvpNameInput.style.cursor = "not-allowed";
 }
 
 /* =========================================================
-   ISI OTOMATIS & KUNCI INPUT NAMA RSVP
-========================================================= */
-const rsvpNameInput = document.getElementById("rsvpName");
-if (rsvpNameInput && guestName) {
-  rsvpNameInput.value = guestName; // Isi nama otomatis
-  rsvpNameInput.readOnly = true;  // Kunci agar tidak bisa diketik/diubah
-  rsvpNameInput.style.backgroundColor = "#f0f0f0"; // (Opsional) beri warna agak abu-abu tanda terkunci
-  rsvpNameInput.style.cursor = "not-allowed";
-}
    2. BUKA UNDANGAN & MUSIK
 ========================================================= */
 const openBtn = document.getElementById("openBtn");
@@ -77,13 +78,18 @@ if (openBtn) {
 const musicToggle = document.getElementById("musicToggle");
 if (musicToggle && bgm) {
   musicToggle.addEventListener("click", () => {
-    if (bgm.paused) { bgm.play(); musicToggle.textContent = "♫"; }
-    else { bgm.pause(); musicToggle.textContent = "♪"; }
+    if (bgm.paused) { 
+      bgm.play(); 
+      musicToggle.textContent = "♫"; 
+    } else { 
+      bgm.pause(); 
+      musicToggle.textContent = "♪"; 
+    }
   });
 }
 
 /* =========================================================
-   3. COUNTDOWN
+   3. COUNTDOWN TIMER
 ========================================================= */
 const target = new Date(CONFIG.weddingDate).getTime();
 
@@ -120,7 +126,7 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 
 /* =========================================================
-   4. GALERI -> ZOOM FOTO
+   4. GALERI -> ZOOM FOTO (LIGHTBOX)
 ========================================================= */
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightboxImg");
@@ -149,10 +155,12 @@ if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
 if (lightbox) {
   lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
 }
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && lightbox && !lightbox.hidden) closeLightbox(); });
+document.addEventListener("keydown", (e) => { 
+  if (e.key === "Escape" && lightbox && !lightbox.hidden) closeLightbox(); 
+});
 
 /* =========================================================
-   5. RSVP -> KIRIM DAN TAMPILKAN DI WEBSITE (FIREBASE)
+   5. RSVP -> SIMPAN KE FIREBASE & TAMPILKAN DI WEBSITE
 ========================================================= */
 const rsvpForm = document.getElementById("rsvpForm");
 const rsvpSubmitBtn = document.getElementById("rsvpSubmitBtn");
@@ -171,7 +179,7 @@ if (rsvpForm) {
     rsvpStatusMsg.hidden = true;
 
     try {
-      // 1. Simpan ke Firebase Realtime Database
+      // 1. Simpan data ke Firebase Realtime Database
       const newRsvpRef = database.ref("responses").push();
       await newRsvpRef.set({
         nama: name,
@@ -180,29 +188,27 @@ if (rsvpForm) {
         timestamp: Date.now()
       });
 
-      // 2. Opsional: Kirim juga ke Formspree (email)
+      // 2. Kirim juga ke Formspree (Opsional/Email)
       fetch(CONFIG.formspreeEndpoint, {
         method: "POST",
         headers: { "Accept": "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({ nama: name, kehadiran: status, ucapan: message || "-" }),
       }).catch(() => {});
 
-      // Berhasil
+      // Tampilkan pesan sukses
       rsvpStatusMsg.textContent = "Terima kasih! Konfirmasi kehadiran kamu sudah terkirim.";
       rsvpStatusMsg.className = "rsvp-status-msg success";
       rsvpStatusMsg.hidden = false;
+
+      // Reset Form
       rsvpForm.reset();
 
-      // Kembalikan nama dari URL dan kunci lagi (jika ada nama dari URL)
+      // Kembalikan nama dari URL & kunci kembali inputnya
       if (hasCustomGuest && rsvpNameInput) {
         rsvpNameInput.value = guestName;
         rsvpNameInput.readOnly = true;
       }
-      // ------------------------------------
 
-      if (guestName !== "Tamu Undangan") {
-        document.getElementById("rsvpName").value = guestName;
-      }
     } catch (err) {
       rsvpStatusMsg.textContent = "Maaf, konfirmasi gagal terkirim. Coba lagi nanti.";
       rsvpStatusMsg.className = "rsvp-status-msg error";
@@ -214,13 +220,7 @@ if (rsvpForm) {
   });
 }
 
-// Isi otomatis nama di form RSVP dari URL
-if (guestName !== "Tamu Undangan") {
-  const rsvpNameInput = document.getElementById("rsvpName");
-  if (rsvpNameInput) rsvpNameInput.value = guestName;
-}
-
-// Menampilkan daftar komentar/kehadiran secara realtime
+// Menampilkan daftar ucapan & konfirmasi secara Realtime dari Firebase
 function loadRsvpData() {
   if (!rsvpListContainer) return;
 
@@ -233,7 +233,7 @@ function loadRsvpData() {
       return;
     }
 
-    // Urutkan dari ucapan terbaru
+    // Urutkan ucapan dari yang paling baru ke lama
     const rsvpArray = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
 
     rsvpArray.forEach((item) => {
@@ -256,17 +256,18 @@ function loadRsvpData() {
   });
 }
 
+// Fungsi Keamanan untuk Mencegah Serangan Script (XSS)
 function escapeHTML(str) {
   return String(str).replace(/[&<>'"]/g, 
     tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
   );
 }
 
-// Panggil fungsi untuk memuat ucapan saat halaman dibuka
+// Jalankan pemanggilan data ucapan saat halaman dibuka
 loadRsvpData();
 
 /* =========================================================
-   6. SALIN NOMOR REKENING
+   6. SALIN NOMOR REKENING / AMPLOP DIGITAL
 ========================================================= */
 document.querySelectorAll(".btn-copy").forEach((btn) => {
   btn.addEventListener("click", () => {
