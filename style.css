@@ -61,7 +61,7 @@ body{
 .cover-photo-bg .cover-eyebrow{color:var(--gold);}
 .cover-photo-bg .cover-sub-photo{color:#EDE3D2;}
 .cover-photo-bg .cover-title{color:#FBF3EE;}
-.cover-photo-bg .cover-title span{color:var(--gold);}
+.cover-photo-bg .cover-title .amp{color:var(--gold);}
 .cover-photo-bg .cover-guest{color:var(--gold);}
 .cover-photo-bg .btn-open{background:var(--gold); color:var(--navy-deep);}
 .cover-photo-bg .btn-open:hover{background:#FBF3EE;}
@@ -112,8 +112,19 @@ body{
   margin:.2rem 0 .8rem;
   font-style:italic;
   font-weight:500;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  line-height:1.05;
+  gap:.1rem;
 }
-.cover-title span{color:var(--navy);}
+.cover-title .amp{
+  font-size:clamp(1.2rem,3.5vw,1.6rem);
+  margin:.15rem 0;
+  font-style:normal;
+}
+.cover-title .amp{color:var(--gold);}
+.cover-title .name-line{display:block;}
 .cover-sub{margin:0; opacity:.8;}
 .cover-guest{
   font-family:var(--font-display);
@@ -156,8 +167,19 @@ body{
   font-weight:500;
   font-size:clamp(2.2rem,7vw,3.2rem);
   margin:.3rem 0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  line-height:1.05;
+  gap:.1rem;
 }
-.hero-title span{color:var(--navy);}
+.hero-title .amp{
+  color:var(--navy);
+  font-size:clamp(1.1rem,3vw,1.4rem);
+  margin:.15rem 0;
+  font-style:normal;
+}
+.hero-title .name-line{display:block;}
 .hero-date{font-family:var(--font-ui); letter-spacing:.05em;}
 .hero-quote{font-style:italic; max-width:480px; margin:0 auto;}
 .hero-quote-sub{font-family:var(--font-ui); font-size:.75rem; opacity:.6; letter-spacing:.05em;}
@@ -367,7 +389,140 @@ body{
   z-index:50;
 }
 
+/* ============ NAVIGATION BAR ============ */
+.site-nav{
+  position:sticky;
+  top:0;
+  z-index:40;
+  background:rgba(251,243,238,.92);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--gold-light);
+}
+.site-nav-inner{
+  display:flex;
+  gap:.3rem;
+  overflow-x:auto;
+  padding:.7rem 1rem;
+  max-width:640px;
+  margin:0 auto;
+  scrollbar-width:none;
+}
+.site-nav-inner::-webkit-scrollbar{display:none;}
+.site-nav-inner a{
+  flex:0 0 auto;
+  font-family:var(--font-ui);
+  font-size:.72rem;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  text-decoration:none;
+  color:var(--navy);
+  background:#fff;
+  border:1px solid var(--gold-light);
+  padding:.45rem .9rem;
+  border-radius:999px;
+  transition:background .2s ease, color .2s ease;
+  white-space:nowrap;
+}
+.site-nav-inner a:hover, .site-nav-inner a:focus-visible{
+  background:var(--navy);
+  color:#fff;
+  border-color:var(--navy);
+}
+
+/* Supaya bagian atas section tidak ketutupan nav bar saat lompat via klik menu */
+.section{scroll-margin-top:64px;}
+
 @media (max-width:480px){
   .section{padding:3.5rem 1.2rem;}
   .gallery{grid-auto-rows:100px;}
+}
+
+/* ============ FIELD NAMA TERKUNCI (dari link ?to=Nama) ============ */
+.rsvp-form input.locked{
+  background:#F1ECE3;
+  color:#8a8177;
+  cursor:not-allowed;
+}
+.rsvp-name-hint{
+  font-family:var(--font-ui);
+  font-size:.7rem;
+  color:#9a9186;
+  margin-top:-.5rem;
+  font-style:normal;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+/* ============ DAFTAR KONFIRMASI (Firebase) ============ */
+.rsvp-list-wrap{
+  margin-top:2.5rem;
+  padding-top:2rem;
+  border-top:1px solid var(--gold-light);
+}
+.rsvp-list-title{
+  font-family:var(--font-ui);
+  font-size:.75rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--navy);
+  text-align:center;
+  margin:0 0 1rem;
+}
+.rsvp-list{
+  display:flex;
+  flex-direction:column;
+  gap:.7rem;
+  max-height:340px;
+  overflow-y:auto;
+}
+.rsvp-list-empty{
+  text-align:center;
+  opacity:.6;
+  font-family:var(--font-ui);
+  font-size:.85rem;
+}
+.rsvp-list-item{
+  background:#fff;
+  border:1px solid var(--gold-light);
+  border-radius:10px;
+  padding:.8rem 1rem;
+}
+.rsvp-list-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.6rem;
+}
+.rsvp-list-head strong{font-family:var(--font-display); font-size:1.05rem; color:var(--navy);}
+.rsvp-badge{
+  font-family:var(--font-ui);
+  font-size:.65rem;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  padding:.25rem .6rem;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.badge-hadir{background:#E4F0DD; color:#3B6E1E;}
+.badge-tidak{background:#F3E3E1; color:var(--maroon);}
+.rsvp-list-msg{
+  margin:.4rem 0 0;
+  font-size:.95rem;
+  opacity:.85;
+  text-align:left;
+}
+
+/* ============ VIDEO KENANGAN ============ */
+.video-wrap{
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid var(--gold-light);
+  box-shadow:0 8px 24px rgba(12,21,48,.15);
+  background:#000;
+}
+.video-wrap video, .video-wrap iframe{
+  width:100%;
+  display:block;
+  aspect-ratio:9/16;
+  max-height:640px;
 }
