@@ -45,7 +45,11 @@
   </div>
 
   <p class="eyebrow cover-eyebrow">Undangan Pernikahan</p>
-  <h1 class="cover-title">Adri <span>&amp;</span> Ami</h1>
+  <h1 class="cover-title">
+    <span class="name-line">Adri</span>
+    <span class="amp">&amp;</span>
+    <span class="name-line">Ami</span>
+  </h1>
   <p class="cover-sub cover-sub-photo">Kepada Yth. Bapak/Ibu/Saudara/i</p>
   <p class="cover-guest" id="guestNameCover">Tamu Undangan</p>
   <button id="openBtn" class="btn-open">Buka Undangan</button>
@@ -57,10 +61,27 @@
   <audio id="bgm" src="music.mp3" loop preload="none"></audio>
   <button id="musicToggle" class="music-btn" aria-label="Putar/Jeda musik">♪</button>
 
+  <!-- NAVIGATION BAR -->
+  <nav class="site-nav" aria-label="Navigasi undangan">
+    <div class="site-nav-inner">
+      <a href="#beranda">Beranda</a>
+      <a href="#mempelai">Mempelai</a>
+      <a href="#acara">Acara</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#video">Video</a>
+      <a href="#rsvp">RSVP</a>
+      <a href="#amplop">Amplop</a>
+    </div>
+  </nav>
+
   <!-- HERO -->
-  <section class="section hero">
+  <section class="section hero" id="beranda">
     <p class="eyebrow">The Wedding Of</p>
-    <h1 class="hero-title">Adri <span>&amp;</span> Ami</h1>
+    <h1 class="hero-title">
+      <span class="name-line">Adri</span>
+      <span class="amp">&amp;</span>
+      <span class="name-line">Ami</span>
+    </h1>
     <p class="hero-date">Sabtu, 12 Desember 2026</p>
     <div class="divider" aria-hidden="true">◆</div>
     <p class="hero-quote">"Wahai manusia, bertakwalah kepada Tuhanmu yang telah menciptakanmu dari diri yang satu (Adam) dan Dia menciptakan darinya pasangannya (Hawa). Dari keduanya Allah memperkembangbiakkan laki-laki dan perempuan yang banyak. Bertakwalah kepada Allah yang dengan nama-Nya kamu saling meminta dan (peliharalah) hubungan kekeluargaan. Sesungguhnya Allah selalu menjaga dan mengawasimu."</p>
@@ -68,7 +89,7 @@
   </section>
 
   <!-- MEMPELAI -->
-  <section class="section couple">
+  <section class="section couple" id="mempelai">
     <p class="eyebrow">Mempelai</p>
     <div class="couple-grid">
       <div class="couple-card">
@@ -97,7 +118,7 @@
   </section>
 
   <!-- ACARA -->
-  <section class="section event">
+  <section class="section event" id="acara">
     <p class="eyebrow">Acara</p>
     <div class="event-grid">
       <div class="event-card">
@@ -121,7 +142,7 @@
   </section>
 
   <!-- GALERI -->
-  <section class="section gallery-section">
+  <section class="section gallery-section" id="galeri">
     <p class="eyebrow">Galeri</p>
     <p class="gallery-hint">Klik foto untuk memperbesar</p>
     <div class="gallery">
@@ -133,20 +154,38 @@
     </div>
   </section>
 
-  <!-- LIGHTBOX (zoom galeri) -->
+  <!-- VIDEO KENANGAN — taruh file video di images/video.mp4 (atau ganti nama sesuai punyamu) -->
+  <section class="section video-section" id="video">
+    <p class="eyebrow">Video Kenangan</p>
+    <div class="video-wrap">
+      <video controls preload="metadata" poster="images/video-poster.jpg">
+        <source src="images/video.mp4" type="video/mp4">
+        Maaf, browser kamu tidak mendukung pemutaran video ini.
+      </video>
+    </div>
+    <!--
+      ALTERNATIF kalau video kamu berukuran besar (di atas ±20MB, GitHub akan menolak/berat):
+      upload videonya ke YouTube (bisa disetel "Unlisted" biar tidak muncul di pencarian publik),
+      lalu ganti seluruh <div class="video-wrap">...</div> di atas dengan kode ini:
+
+      <div class="video-wrap">
+        <iframe width="100%" height="400"
+          src="https://www.youtube.com/embed/GANTI_DENGAN_ID_VIDEO_YOUTUBE"
+          title="Video Kenangan" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    -->
+  </section>
+
+  <!-- LIGHTBOX (zoom foto galeri, hanya muncul saat foto diklik) -->
   <div id="lightbox" class="lightbox" hidden>
     <button type="button" id="lightboxClose" class="lightbox-close" aria-label="Tutup">&times;</button>
     <img id="lightboxImg" src="" alt="Foto diperbesar">
   </div>
 
-  <!-- LIGHTBOX (zoom foto galeri, hanya muncul saat foto diklik) -->
-  <div id="lightbox" class="lightbox" hidden>
-    <button id="lightboxClose" class="lightbox-close" aria-label="Tutup">&times;</button>
-    <img id="lightboxImg" src="" alt="Foto diperbesar">
-  </div>
-
   <!-- RSVP -->
-  <section class="section rsvp-section">
+  <section class="section rsvp-section" id="rsvp">
     <p class="eyebrow">Konfirmasi Kehadiran</p>
     <form id="rsvpForm" class="rsvp-form">
       <label>
@@ -167,10 +206,18 @@
       <button type="submit" class="btn-open" id="rsvpSubmitBtn">Kirim Konfirmasi</button>
       <p id="rsvpStatusMsg" class="rsvp-status-msg" hidden></p>
     </form>
+
+    <!-- DAFTAR YANG SUDAH KONFIRMASI (realtime dari Firebase) -->
+    <div class="rsvp-list-wrap">
+      <p class="rsvp-list-title">Yang Sudah Konfirmasi</p>
+      <div id="rsvpList" class="rsvp-list">
+        <p class="rsvp-list-empty">Memuat daftar konfirmasi...</p>
+      </div>
+    </div>
   </section>
 
   <!-- AMPLOP DIGITAL -->
-  <section class="section gift-section">
+  <section class="section gift-section" id="amplop">
     <p class="eyebrow">Amplop Digital</p>
     <p class="gift-note">Doa restu Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Namun jika ingin memberi tanda kasih, kami sediakan pilihan berikut.</p>
     <div class="gift-grid">
@@ -199,6 +246,6 @@
 
 </main>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
