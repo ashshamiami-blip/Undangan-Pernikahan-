@@ -187,10 +187,10 @@ body{
 /* ============ COUPLE ============ */
 .couple-grid{
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:1.5rem;
-  flex-wrap:wrap;
+  gap:.5rem;
 }
 .couple-photo{
   width:120px;
@@ -389,48 +389,49 @@ body{
   z-index:50;
 }
 
-/* ============ NAVIGATION BAR ============ */
+/* ============ NAVIGATION BAR (ikon, fixed di bawah layar) ============ */
 .site-nav{
-  position:sticky;
-  top:0;
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
   z-index:40;
-  background:rgba(251,243,238,.92);
-  backdrop-filter:blur(6px);
-  border-bottom:1px solid var(--gold-light);
-}
-.site-nav-inner{
   display:flex;
-  gap:.3rem;
-  overflow-x:auto;
-  padding:.7rem 1rem;
-  max-width:640px;
-  margin:0 auto;
-  scrollbar-width:none;
+  justify-content:space-around;
+  align-items:center;
+  background:var(--navy-deep);
+  padding:.55rem .3rem calc(.55rem + env(safe-area-inset-bottom));
+  box-shadow:0 -4px 16px rgba(0,0,0,.2);
 }
-.site-nav-inner::-webkit-scrollbar{display:none;}
-.site-nav-inner a{
-  flex:0 0 auto;
-  font-family:var(--font-ui);
-  font-size:.72rem;
-  letter-spacing:.05em;
-  text-transform:uppercase;
-  text-decoration:none;
-  color:var(--navy);
-  background:#fff;
-  border:1px solid var(--gold-light);
-  padding:.45rem .9rem;
-  border-radius:999px;
-  transition:background .2s ease, color .2s ease;
-  white-space:nowrap;
+.site-nav a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  color:var(--gold);
+  transition:background .2s ease, color .2s ease, transform .15s ease;
 }
-.site-nav-inner a:hover, .site-nav-inner a:focus-visible{
-  background:var(--navy);
-  color:#fff;
-  border-color:var(--navy);
+.site-nav a svg{width:20px; height:20px;}
+.site-nav a:hover, .site-nav a:focus-visible{
+  background:var(--gold);
+  color:var(--navy-deep);
+  transform:translateY(-2px);
+  outline:none;
 }
 
-/* Supaya bagian atas section tidak ketutupan nav bar saat lompat via klik menu */
-.section{scroll-margin-top:64px;}
+/* Supaya konten paling bawah (footer) tidak ketutupan nav bar */
+main#content{padding-bottom:70px;}
+
+/* Supaya bagian atas section tidak ketutupan nav bar lama (top) — kini tidak perlu besar */
+.section{scroll-margin-top:16px;}
+
+/* Tombol musik dipindah ke atas karena bawah sekarang dipakai nav bar */
+.music-btn{
+  bottom:auto;
+  top:1.2rem;
+}
 
 @media (max-width:480px){
   .section{padding:3.5rem 1.2rem;}
