@@ -1,15 +1,49 @@
 /* =========================================================
+   FIREBASE — RSVP disimpan & ditampilkan realtime pakai Firestore
+   Cara dapatkan firebaseConfig ini:
+   1. Buka https://console.firebase.google.com -> Add project (gratis)
+   2. Di project itu, klik ikon "</>" (Web) untuk daftarkan web app
+   3. Copy object firebaseConfig yang muncul, tempel di bawah ini
+   4. Di menu kiri, klik "Build -> Firestore Database" -> Create database
+      -> pilih "Start in test mode" (mode sederhana untuk mulai)
+   5. Di tab "Rules" Firestore, boleh pakai aturan sederhana ini
+      supaya publik bisa isi RSVP tapi tidak bisa mengubah data lama:
+
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /rsvp/{docId} {
+            allow read: if true;
+            allow create: if true;
+            allow update, delete: if false;
+          }
+        }
+      }
+========================================================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, serverTimestamp,
+  query, orderBy, onSnapshot, limit,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "GANTI_DENGAN_API_KEY",
+  authDomain: "GANTI.firebaseapp.com",
+  projectId: "GANTI_PROJECT_ID",
+  storageBucket: "GANTI.appspot.com",
+  messagingSenderId: "GANTI",
+  appId: "GANTI_APP_ID",
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+const rsvpCollection = collection(db, "rsvp");
+
+/* =========================================================
    PENGATURAN — ubah bagian ini sesuai kebutuhanmu
 ========================================================= */
 const CONFIG = {
   weddingDate: "2026-12-12T08:00:00", // format: YYYY-MM-DDTHH:MM:SS
-
-  // RSVP dikirim ke Formspree (layanan gratis) supaya konfirmasi tetap
-  // di dalam website, tidak pindah ke WhatsApp.
-  // Cara dapatkan endpoint ini: daftar gratis di https://formspree.io
-  // -> Create Form -> nanti dapat link seperti https://formspree.io/f/xxxxabcd
-  // -> ganti nilai di bawah ini dengan link tersebut.
-  formspreeEndpoint: "https://formspree.io/f/xnjeyvjk",
 };
 
 /* =========================================================
@@ -119,7 +153,7 @@ lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLigh
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !lightbox.hidden) closeLightbox(); });
 
 /* =========================================================
-   5. RSVP -> KIRIM LANGSUNG DARI WEBSITE (via Formspree)
+   5. RSVP -> SIMPAN KE FIREBASE (langsung dari website)
 ========================================================= */
 const rsvpForm = document.getElementById("rsvpForm");
 const rsvpSubmitBtn = document.getElementById("rsvpSubmitBtn");
@@ -136,23 +170,26 @@ rsvpForm.addEventListener("submit", async (e) => {
   rsvpStatusMsg.hidden = true;
 
   try {
-    const response = await fetch(CONFIG.formspreeEndpoint, {
-      method: "POST",
-      headers: { "Accept": "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify({ nama: name, kehadiran: status, ucapan: message || "-" }),
+    await addDoc(rsvpCollection, {
+      nama: name,
+      kehadiran: status,
+      ucapan: message || "-",
+      waktu: serverTimestamp(),
     });
 
-    if (response.ok) {
-      rsvpStatusMsg.textContent = "Terima kasih! Konfirmasi kehadiran kamu sudah terkirim.";
-      rsvpStatusMsg.className = "rsvp-status-msg success";
-      rsvpStatusMsg.hidden = false;
+    rsvpStatusMsg.textContent = "Terima kasih! Konfirmasi kehadiran kamu sudah terkirim.";
+    rsvpStatusMsg.className = "rsvp-status-msg success";
+    rsvpStatusMsg.hidden = false;
+
+    const messageField = document.getElementById("rsvpMessage");
+    messageField.value = "";
+    // nama & kehadiran sengaja tidak direset kalau field nama sedang terkunci
+    if (!document.getElementById("rsvpName").readOnly) {
       rsvpForm.reset();
-      if (guestName !== "Tamu Undangan") document.getElementById("rsvpName").value = guestName;
-      rsvpSubmitBtn.textContent = "Kirim Konfirmasi";
-    } else {
-      throw new Error("Gagal mengirim");
     }
+    rsvpSubmitBtn.textContent = "Kirim Konfirmasi";
   } catch (err) {
+    console.error(err);
     rsvpStatusMsg.textContent = "Maaf, konfirmasi gagal terkirim. Coba lagi sebentar lagi ya.";
     rsvpStatusMsg.className = "rsvp-status-msg error";
     rsvpStatusMsg.hidden = false;
@@ -162,10 +199,78 @@ rsvpForm.addEventListener("submit", async (e) => {
   rsvpSubmitBtn.disabled = false;
 });
 
-/* Isi otomatis nama di form RSVP dari nama tamu di URL */
+/* Kunci field nama kalau tamu dibuka lewat link ?to=Nama, supaya nama
+   yang dikonfirmasi tidak bisa diubah/diketik ulang oleh tamu */
 if (guestName !== "Tamu Undangan") {
   const rsvpNameInput = document.getElementById("rsvpName");
-  if (rsvpNameInput) rsvpNameInput.value = guestName;
+  if (rsvpNameInput) {
+    rsvpNameInput.value = guestName;
+    rsvpNameInput.readOnly = true;
+    rsvpNameInput.classList.add("locked");
+
+    const hint = document.createElement("small");
+    hint.className = "rsvp-name-hint";
+    hint.textContent = "Nama ini otomatis dari link undanganmu dan tidak bisa diubah.";
+    rsvpNameInput.insertAdjacentElement("afterend", hint);
+  }
+}
+
+/* =========================================================
+   5b. DAFTAR KONFIRMASI -> tampil realtime dari Firestore
+========================================================= */
+const rsvpListEl = document.getElementById("rsvpList");
+
+function renderRsvpList(snapshot) {
+  if (!rsvpListEl) return;
+
+  if (snapshot.empty) {
+    rsvpListEl.innerHTML = '<p class="rsvp-list-empty">Belum ada konfirmasi. Jadilah yang pertama!</p>';
+    return;
+  }
+
+  rsvpListEl.innerHTML = "";
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+
+    const item = document.createElement("div");
+    item.className = "rsvp-list-item";
+
+    const head = document.createElement("div");
+    head.className = "rsvp-list-head";
+
+    const name = document.createElement("strong");
+    name.textContent = data.nama || "Tamu";
+
+    const badge = document.createElement("span");
+    const isHadir = data.kehadiran === "Hadir";
+    badge.className = "rsvp-badge " + (isHadir ? "badge-hadir" : "badge-tidak");
+    badge.textContent = data.kehadiran || "-";
+
+    head.appendChild(name);
+    head.appendChild(badge);
+    item.appendChild(head);
+
+    if (data.ucapan && data.ucapan !== "-") {
+      const msg = document.createElement("p");
+      msg.className = "rsvp-list-msg";
+      msg.textContent = data.ucapan;
+      item.appendChild(msg);
+    }
+
+    rsvpListEl.appendChild(item);
+  });
+}
+
+if (rsvpListEl) {
+  const rsvpQuery = query(rsvpCollection, orderBy("waktu", "desc"), limit(100));
+  onSnapshot(
+    rsvpQuery,
+    renderRsvpList,
+    (err) => {
+      console.error("Gagal memuat daftar RSVP:", err);
+      rsvpListEl.innerHTML = '<p class="rsvp-list-empty">Gagal memuat daftar konfirmasi.</p>';
+    }
+  );
 }
 
 /* =========================================================
