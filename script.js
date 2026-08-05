@@ -1,34 +1,35 @@
 /* =========================================================
-   FIREBASE — RSVP disimpan & ditampilkan realtime pakai Firestore
-   Cara dapatkan firebaseConfig ini:
-   1. Buka https://console.firebase.google.com -> Add project (gratis)
-   2. Di project itu, klik ikon "</>" (Web) untuk daftarkan web app
-   3. Copy object firebaseConfig yang muncul, tempel di bawah ini
-   4. Di menu kiri, klik "Build -> Firestore Database" -> Create database
-      -> pilih "Start in test mode" (mode sederhana untuk mulai)
-   5. Di tab "Rules" Firestore, boleh pakai aturan sederhana ini
-      supaya publik bisa isi RSVP tapi tidak bisa mengubah data lama:
+   FIREBASE (Realtime Database) — RSVP disimpan & ditampilkan
+   realtime.
+   Cara dapatkan firebaseConfig lengkap:
+   1. Buka https://console.firebase.google.com -> buka project kamu
+   2. Klik ikon gear -> "Project settings"
+   3. Scroll ke "Your apps" -> kalau belum ada, klik "</>" untuk
+      daftarkan web app -> nanti muncul object firebaseConfig
+   4. Copy semua isinya, tempel di bawah ini (gantikan yang GANTI_...)
+      databaseURL sudah aku isikan sesuai yang kamu kasih.
+   5. Di menu kiri "Build -> Realtime Database" -> tab "Rules",
+      pakai aturan sederhana ini supaya publik bisa isi RSVP:
 
-      rules_version = '2';
-      service cloud.firestore {
-        match /databases/{database}/documents {
-          match /rsvp/{docId} {
-            allow read: if true;
-            allow create: if true;
-            allow update, delete: if false;
+      {
+        "rules": {
+          "rsvp": {
+            ".read": true,
+            ".write": true
           }
         }
       }
 ========================================================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, serverTimestamp,
-  query, orderBy, onSnapshot, limit,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  getDatabase, ref, push, serverTimestamp,
+  query, orderByChild, limitToLast, onValue,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "GANTI_DENGAN_API_KEY",
   authDomain: "GANTI.firebaseapp.com",
+  databaseURL: "https://undangan-p-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "GANTI_PROJECT_ID",
   storageBucket: "GANTI.appspot.com",
   messagingSenderId: "GANTI",
@@ -36,8 +37,8 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
-const rsvpCollection = collection(db, "rsvp");
+const db = getDatabase(firebaseApp);
+const rsvpRef = ref(db, "rsvp");
 
 /* =========================================================
    PENGATURAN — ubah bagian ini sesuai kebutuhanmu
@@ -170,7 +171,7 @@ rsvpForm.addEventListener("submit", async (e) => {
   rsvpStatusMsg.hidden = true;
 
   try {
-    await addDoc(rsvpCollection, {
+    await push(rsvpRef, {
       nama: name,
       kehadiran: status,
       ucapan: message || "-",
@@ -216,22 +217,24 @@ if (guestName !== "Tamu Undangan") {
 }
 
 /* =========================================================
-   5b. DAFTAR KONFIRMASI -> tampil realtime dari Firestore
+   5b. DAFTAR KONFIRMASI -> tampil realtime dari Realtime Database
 ========================================================= */
 const rsvpListEl = document.getElementById("rsvpList");
 
 function renderRsvpList(snapshot) {
   if (!rsvpListEl) return;
 
-  if (snapshot.empty) {
+  const val = snapshot.val();
+  if (!val) {
     rsvpListEl.innerHTML = '<p class="rsvp-list-empty">Belum ada konfirmasi. Jadilah yang pertama!</p>';
     return;
   }
 
-  rsvpListEl.innerHTML = "";
-  snapshot.forEach((docSnap) => {
-    const data = docSnap.data();
+  // urutkan dari yang paling baru
+  const entries = Object.values(val).sort((a, b) => (b.waktu || 0) - (a.waktu || 0));
 
+  rsvpListEl.innerHTML = "";
+  entries.forEach((data) => {
     const item = document.createElement("div");
     item.className = "rsvp-list-item";
 
@@ -262,8 +265,8 @@ function renderRsvpList(snapshot) {
 }
 
 if (rsvpListEl) {
-  const rsvpQuery = query(rsvpCollection, orderBy("waktu", "desc"), limit(100));
-  onSnapshot(
+  const rsvpQuery = query(rsvpRef, orderByChild("waktu"), limitToLast(100));
+  onValue(
     rsvpQuery,
     renderRsvpList,
     (err) => {
