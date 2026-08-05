@@ -399,7 +399,7 @@ body{
   display:flex;
   justify-content:space-around;
   align-items:center;
-  background:var(--navy-deep);
+  background:var(--maroon);
   padding:.55rem .3rem calc(.55rem + env(safe-area-inset-bottom));
   box-shadow:0 -4px 16px rgba(0,0,0,.2);
 }
