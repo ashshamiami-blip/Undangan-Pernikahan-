@@ -41,13 +41,12 @@ body{
   justify-content:center;
   text-align:center;
   padding:2rem 1.5rem;
-  background:#000;
+  background:var(--navy-deep);
 }
-/* Background cover sepenuhnya mengikuti video — tidak ada warna navy lagi.
-   Kalau video belum diupload, otomatis fallback ke foto images/wallpaper.jpg,
-   atau hitam polos kalau foto juga belum ada. */
+/* Background cover mengikuti video kalau ada. Kalau video/foto belum
+   ke-load, fallback ke warna navy gelap (bukan hitam polos). */
 .cover-photo-bg{
-  background-color:#000;
+  background-color:var(--navy-deep);
   background-image:url('images/wallpaper.jpg');
   background-size:cover;
   background-position:center;
@@ -60,7 +59,7 @@ body{
 .cover-photo-bg .cover-title{color:#FBF3EE;}
 .cover-photo-bg .cover-title .amp{color:var(--gold);}
 .cover-photo-bg .cover-guest{color:var(--gold);}
-.cover-photo-bg .btn-open{background:var(--gold); color:var(--maroon);}
+.cover-photo-bg .btn-open{background:var(--gold); color:var(--navy-deep);}
 .cover-photo-bg .btn-open:hover{background:#FBF3EE;}
 
 /* Video background di cover — kalau file video belum diupload,
@@ -386,7 +385,7 @@ body{
   display:flex;
   justify-content:space-around;
   align-items:center;
-  background:var(--maroon);
+  background:var(--navy-deep);
   padding:.55rem .3rem calc(.55rem + env(safe-area-inset-bottom));
   box-shadow:0 -4px 16px rgba(0,0,0,.2);
 }
