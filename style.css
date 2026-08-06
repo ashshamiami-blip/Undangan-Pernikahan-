@@ -21,11 +21,6 @@ body{
   font-size:19px;
   line-height:1.6;
   background-color:var(--cream);
-/* Properti bingkai maroon */
-  border: 28px solid var(--maroon);
-  min-height: 100vh;
-  border-radius: 100px;
-  
 }
 
 .eyebrow{
@@ -46,23 +41,17 @@ body{
   justify-content:center;
   text-align:center;
   padding:2rem 1.5rem;
-  background:
-    radial-gradient(circle at 50% 20%, var(--gold-light) 0%, transparent 55%),
-    transparent;
+  background:#000;
 }
-/* Background navy elegan bergaya video: gradasi biru tua lembut + ranting bunga emas.
-   Kalau ada file images/wallpaper.jpg, otomatis dipakai sebagai foto latar
-   (dengan overlay gelap supaya teks tetap kebaca). Kalau foto belum ada,
-   otomatis fallback ke gradasi navy polos di bawahnya. */
+/* Background cover sepenuhnya mengikuti video — tidak ada warna navy lagi.
+   Kalau video belum diupload, otomatis fallback ke foto images/wallpaper.jpg,
+   atau hitam polos kalau foto juga belum ada. */
 .cover-photo-bg{
-  background-color:var(--navy-deep);
-  background-image:
-    linear-gradient(rgba(12,21,48,.55), rgba(12,21,48,.75)),
-    url('images/wallpaper.jpg'),
-    radial-gradient(circle at 50% 38%, var(--navy) 0%, var(--navy-deep) 70%);
-  background-size:cover, cover, cover;
-  background-position:center, center, center;
-  background-repeat:no-repeat, no-repeat, no-repeat;
+  background-color:#000;
+  background-image:url('images/wallpaper.jpg');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
   position:relative;
   overflow:hidden;
 }
@@ -71,7 +60,7 @@ body{
 .cover-photo-bg .cover-title{color:#FBF3EE;}
 .cover-photo-bg .cover-title .amp{color:var(--gold);}
 .cover-photo-bg .cover-guest{color:var(--gold);}
-.cover-photo-bg .btn-open{background:var(--gold); color:var(--navy-deep);}
+.cover-photo-bg .btn-open{background:var(--gold); color:var(--maroon);}
 .cover-photo-bg .btn-open:hover{background:#FBF3EE;}
 
 /* Video background di cover — kalau file video belum diupload,
@@ -90,7 +79,7 @@ body{
   position:absolute;
   inset:0;
   z-index:-1;
-  background:linear-gradient(rgba(12,21,48,.5), rgba(12,21,48,.78));
+  background:linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.6));
 }
 
 .cover-ornament{margin-bottom:1rem;}
@@ -103,21 +92,6 @@ body{
   background:linear-gradient(90deg, transparent, var(--gold), transparent);
   margin:0 auto;
 }
-
-/* ============ BINGKAI TIPIS EMAS + RANTING BUNGA ============ */
-.ornate-frame{
-  position:absolute;
-  inset:16px;
-  border:1px solid rgba(201,161,94,.55);
-  pointer-events:none;
-  z-index:1;
-  animation:frameGlow 4s ease-in-out infinite;
-}
-@keyframes frameGlow{
-  0%,100%{border-color:rgba(201,161,94,.4);}
-  50%{border-color:rgba(201,161,94,.75);}
-}
-
 
 .cover-title{
   font-family:var(--font-display);
@@ -142,7 +116,7 @@ body{
 .cover-guest{
   font-family:var(--font-display);
   font-size:1.5rem;
-  color:var(--maroon);
+  color:var(--navy);
   margin:.3rem 0 2rem;
   font-weight:600;
 }
@@ -151,7 +125,7 @@ body{
   font-size:.85rem;
   letter-spacing:.08em;
   text-transform:uppercase;
-  background:var(--maroon);
+  background:var(--navy);
   color:var(--cream);
   border:none;
   padding:.9rem 2.2rem;
