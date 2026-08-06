@@ -50,11 +50,19 @@ body{
     radial-gradient(circle at 50% 20%, var(--gold-light) 0%, transparent 55%),
     transparent;
 }
-/* Background navy elegan bergaya video: gradasi biru tua lembut + ranting bunga emas */
+/* Background navy elegan bergaya video: gradasi biru tua lembut + ranting bunga emas.
+   Kalau ada file images/wallpaper.jpg, otomatis dipakai sebagai foto latar
+   (dengan overlay gelap supaya teks tetap kebaca). Kalau foto belum ada,
+   otomatis fallback ke gradasi navy polos di bawahnya. */
 .cover-photo-bg{
   background-color:var(--navy-deep);
   background-image:
+    linear-gradient(rgba(12,21,48,.55), rgba(12,21,48,.75)),
+    url('images/wallpaper.jpg'),
     radial-gradient(circle at 50% 38%, var(--navy) 0%, var(--navy-deep) 70%);
+  background-size:cover, cover, cover;
+  background-position:center, center, center;
+  background-repeat:no-repeat, no-repeat, no-repeat;
   position:relative;
   overflow:hidden;
 }
@@ -65,6 +73,25 @@ body{
 .cover-photo-bg .cover-guest{color:var(--gold);}
 .cover-photo-bg .btn-open{background:var(--gold); color:var(--navy-deep);}
 .cover-photo-bg .btn-open:hover{background:#FBF3EE;}
+
+/* Video background di cover — kalau file video belum diupload,
+   videonya otomatis transparan dan yang kelihatan adalah
+   foto/gradasi fallback punya .cover-photo-bg di belakangnya */
+.cover-bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+  background:transparent;
+}
+.cover-video-overlay{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(rgba(12,21,48,.5), rgba(12,21,48,.78));
+}
 
 .cover-ornament{margin-bottom:1rem;}
 
