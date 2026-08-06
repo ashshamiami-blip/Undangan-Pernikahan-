@@ -63,6 +63,22 @@ function handleImgFallback(img) {
 }
 document.querySelectorAll("img").forEach(handleImgFallback);
 
+/* Video background cover: coba mainkan sesegera mungkin, dan coba lagi
+   begitu ada interaksi pertama dari user (jaga-jaga kalau browser
+   memblokir autoplay walau videonya sudah muted) */
+const coverBgVideo = document.querySelector(".cover-bg-video");
+if (coverBgVideo) {
+  coverBgVideo.play().catch(() => {});
+
+  function retryPlayVideo() {
+    coverBgVideo.play().catch(() => {});
+    document.removeEventListener("click", retryPlayVideo);
+    document.removeEventListener("touchstart", retryPlayVideo);
+  }
+  document.addEventListener("click", retryPlayVideo, { once: true });
+  document.addEventListener("touchstart", retryPlayVideo, { once: true });
+}
+
 /* =========================================================
    1. NAMA TAMU DARI URL (?to=Nama)
    Contoh link: https://namakamu.github.io/undangan/?to=Syifa
@@ -86,6 +102,7 @@ openBtn.addEventListener("click", () => {
   setTimeout(() => { cover.style.display = "none"; }, 600);
   document.body.style.overflow = "auto";
   bgm.play().catch(() => {}); // sebagian browser butuh interaksi user dulu; klik ini sudah cukup
+  if (coverBgVideo) coverBgVideo.play().catch(() => {});
 });
 
 /* Musik on/off */
