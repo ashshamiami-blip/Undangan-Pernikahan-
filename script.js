@@ -63,6 +63,15 @@ function handleImgFallback(img) {
 }
 document.querySelectorAll("img").forEach(handleImgFallback);
 
+/* Video background cover: main sekali lalu berhenti (freeze) di
+   frame terakhir, tidak mengulang dari awal */
+const coverBgVideo = document.querySelector(".cover-bg-video");
+if (coverBgVideo) {
+  coverBgVideo.addEventListener("ended", () => {
+    coverBgVideo.pause();
+  });
+}
+
 /* =========================================================
    1. NAMA TAMU DARI URL (?to=Nama)
    Contoh link: https://namakamu.github.io/undangan/?to=Syifa
